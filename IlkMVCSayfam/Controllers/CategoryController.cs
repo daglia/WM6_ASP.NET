@@ -22,7 +22,7 @@ namespace IlkMVCSayfam.Controllers
             if (id == null) return RedirectToAction("Index");
 
             var data = new NorthwindSabahEntities().Categories.Find(id.Value);
-            if (data == null) RedirectToAction("Index");
+            if (data == null) return RedirectToAction("Index");
 
             return View(data);
         }

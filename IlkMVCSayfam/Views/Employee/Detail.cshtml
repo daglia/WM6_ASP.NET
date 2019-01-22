@@ -1,0 +1,15 @@
+﻿@model Employee
+@{
+    ViewBag.Title = "Detail";
+}
+
+<h2>@(Model.FirstName + " " + Model.LastName) adlı çalışanın detay sayfası</h2>
+<h4>@Model.Notes</h4>
+
+@if(Model.ReportsTo != null)
+{
+    var raporKisi = new NorthwindSabahEntities().Employees.Find(Model.ReportsTo);
+
+    <h4>Şu kişinin emri altında: @(raporKisi.FirstName + " " + raporKisi.LastName)</h4>
+}
+
