@@ -60,7 +60,7 @@
 {
     <script>
         $(function () {
-            function init() {
+            var init = function init() {
                 $.ajax({
                     url: "@Url.Action("Search", "Category", new {s="*"})",
                     method: "get",
@@ -74,7 +74,8 @@
                     }
                 })
             }
-            init();
+            setInterval(init, 10000);
+            
             $("#frmAdd").submit(function (ev) {
                 ev.preventDefault();
                 var data = {
