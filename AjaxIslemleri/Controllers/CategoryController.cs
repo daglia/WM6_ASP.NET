@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using AjaxIslemleri.Models.ViewModels;
 
 namespace AjaxIslemleri.Controllers
 {
@@ -18,7 +19,7 @@ namespace AjaxIslemleri.Controllers
         public JsonResult Search(string s)
         {
             var key = s.ToLower();
-            if (key.Length <= 2)
+            if (key.Length <= 2 && key != "*")
                 return Json(new ResponseData()
                 {
                     message = "Aramak için 2 karakterden fazlasını girin",
@@ -28,8 +29,29 @@ namespace AjaxIslemleri.Controllers
             try
             {
                 var db = new NorthwindEntities();
-                db.Configuration.LazyLoadingEnabled = false;
-                var data = db.Categories.Where(x => x.CategoryName.ToLower().Contains(key) || x.Description.Contains(key)).ToList();
+                List<CategoryViewModel> data;
+                if (key == "*")
+                {
+                    data = db.Categories.OrderBy(x => x.CategoryName)
+                        .Select(x => new CategoryViewModel()
+                        {
+                            CategoryName = x.CategoryName,
+                            Description = x.Description,
+                            CategoryID = x.CategoryID,
+                            ProductCount = x.Products.Count
+                        }).ToList();
+                }
+                else
+                {
+                    data = db.Categories.Where(x => x.CategoryName.ToLower().Contains(key) || x.Description.Contains(key)).Select(x => new CategoryViewModel()
+                        {
+                            CategoryName = x.CategoryName,
+                            Description = x.Description,
+                            CategoryID = x.CategoryID,
+                            ProductCount = x.Products.Count
+                        })
+                        .ToList();
+                }
 
                 return Json(new ResponseData()
                 {
@@ -47,7 +69,58 @@ namespace AjaxIslemleri.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
         }
-    }
 
-    
+        public JsonResult Add(CategoryViewModel model)
+        {
+            try
+            {
+                var db = new NorthwindEntities();
+                db.Categories.Add(new Category()
+                {
+                    CategoryName = model.CategoryName,
+                    Description = model.Description
+                });
+                db.SaveChanges();
+
+                return Json(new ResponseData()
+                {
+                    message = $"{model.CategoryName} kategorisi başarıyla eklendi.",
+                    success = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    message = $"Bir hata oluştu!\n{ex.Message}",
+                    success = false,
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult Delete(int id)
+        {
+            try
+            {
+                var db = new NorthwindEntities();
+                var cat = db.Categories.Find(id);
+                db.Categories.Remove(cat);
+                db.SaveChanges();
+
+                return Json(new ResponseData()
+                {
+                    message = $"{cat.CategoryName} kategorisi silindi.",
+                    success = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    message = $"Bir hata oluştu!\n{ex.Message}",
+                    success = false,
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+    }
 }

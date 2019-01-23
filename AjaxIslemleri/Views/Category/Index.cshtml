@@ -6,6 +6,23 @@
 <h2>Index</h2>
 
 <div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <form class="form-inline" id="frmAdd">
+                <div class="form-group">
+                    <label for="txtCategoryName">Category Name</label>
+                    <input type="text" class="form-control" id="txtCategoryName" placeholder="Category Name">
+                </div>
+                <div class="form-group">
+                    <label for="txtDescription">Description</label>
+                    <input type="text" class="form-control" id="txtDescription" placeholder="Description">
+                </div>
+                <button type="submit" class="btn btn-default btn-info">Add Category</button>
+            </form>
+        </div>
+    </div>
+    <br />
+    <br />
     <div class="row" id="searchdiv">
         <div class="col-md-6 col-md-offset-3">
             <div class="col-lg-6">
@@ -22,30 +39,18 @@
         </div>
     </div>
     <div class="row" id="resultdiv">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-12">
             <table class="table table-responsive table-striped">
                 <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Product Count</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody id="resultbody">
                     <tr>
-                        <th>1</th>
-                        <td>Beverages</td>
-                        <td>falan filan</td>
-                        <td>0</td>
-                        <td>
-                            <a href="@Url.Action("Detail", "Category", new {id = 1})" class="btn btn-success">
-                                Detail
-                            </a>
-                        </td>
+                        <th>#</th>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Product Count</th>
+                        <th>Action</th>
                     </tr>
-                </tbody>
+                </thead>
+                <tbody id="resultbody"></tbody>
             </table>
         </div>
     </div>
@@ -54,9 +59,43 @@
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
+            function init() {
+                $.ajax({
+                    url: "@Url.Action("Search", "Category", new {s="*"})",
+                    method: "get",
+                    dataType: "json",
+                }).done(function(e) {
+                    if (e.success) {
+                        renderdata(e.data);
+                        $("#resultdiv").show(600);
+                    } else {
+                        alert(e.message)
+                    }
+                })
+            }
+            init();
+            $("#frmAdd").submit(function (ev) {
+                ev.preventDefault();
+                var data = {
+                    CategoryName: $("#txtCategoryName").val(),
+                    Description: $("#txtDescription").val()
+                }
+                $.ajax({
+                    url: '@Url.Action("Add","Category")',
+                    method: "POST",
+                    dataType: "json",
+                    data: data
+                }).done(function(e) {
+                    alert(e.message);
+                    init();
+                    })
+
+            });
+            $("#resultdiv").hide();
             $("#txtsearch").keyup(function (e) {
                 $("#resultmessage").hide();
+                $("#resultdiv").hide();
                 var key = $(this).val();
                 if (key.length < 3) // Başka uygulamalardan da istek yapılabileceği düşünülürse, burada bir kontrol gerekli.
                     return;
@@ -71,6 +110,7 @@
                         $("#resultmessage").html("<span class='text text-success'><h2>" + e.message + "</h2></span>");
                         if (e.data.length > 0) {
                             renderdata(e.data);
+                            $("#resultdiv").fadeIn(600);
                         }
                     } else {
                         $("#resultmessage").html("<span class='text text-danger'><h2>" + e.message + "</h2></span>");
@@ -90,12 +130,31 @@
                         var td2 = document.createElement("td");
                         td2.innerText = value.Description;
                         var td3 = document.createElement("td");
-                        td3.innerText = 0;
+                        td3.innerText = value.ProductCount;
                         var td4 = document.createElement("td");
                         var a = document.createElement("a");
                         $(a).attr("href", "@Url.Action("Detail", "Category")" + "/" + value.CategoryID).attr("class", "btn btn-success").html("Detail");
-
                         $(a).appendTo($(td4));
+
+                        var btnSil = document.createElement("input");
+                        $(btnSil).attr({
+                            "type": "button",
+                            "class": "btn btn-danger",
+                            "value": "Delete",
+                            "name": value.CategoryID
+                        }).on("click", function () {
+                            var id = this.name;
+                            $.ajax({
+                                url: "@Url.Action("Delete","Category")",
+                                method: "post",
+                                dataType: "json",
+                                data: {id: id}
+                        }).done(function(e) {
+                                alert(e.message);
+                                init();
+                            })
+                            })
+                        $(btnSil).appendTo($(td4));
 
                         $(tr).append(th).append(td).append(td2).append(td3).append(td4).appendTo($("#resultbody"));
                     });
