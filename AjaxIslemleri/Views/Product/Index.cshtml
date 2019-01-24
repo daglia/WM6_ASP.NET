@@ -9,14 +9,7 @@
     <div class="row"></div>
     <div class="row">
         <div class="col-md-6">
-            <select id="cmbCategory" class="form-control input-lg">
-                <option value="1">a</option>
-                <option value="2">a</option>
-                <option value="3">a</option>
-                <option value="4">a</option>
-                <option value="5">a</option>
-                <option value="6">a</option>
-            </select>
+            <select id="cmbCategory" class="form-control input-lg"></select>
         </div>
         <div class="row" id="resultdiv">
             <div class="col-md-12">
@@ -69,12 +62,6 @@
                     }
                     });
 
-            }
-
-            $("#cmbCategory").change(function () {
-                var id = $(this).val();
-                console.log($("#cmbCategory option:selected").val());
-
                 $.ajax({
                     url: "@Url.Action("GetAllProducts", "Product")",
                     method: "get",
@@ -86,7 +73,14 @@
                     } else {
                         alert(e.message);
                     }
-                    });
+                });
+            }
+
+            $("#cmbCategory").change(function () {
+                var id = $(this).val();
+                console.log($("#cmbCategory option:selected").val());
+
+                
             });
 
             init();
@@ -119,9 +113,46 @@
                         var td10 = document.createElement("td");
                         td10.innerText = value.Discontinued.toString();
                         var td11 = document.createElement("td");
-                        var a = document.createElement("a");
-                        $(a).attr("href", "@Url.Action("Detail", "Category")" + "/" + value.CategoryID).attr("class", "btn btn-success").html("Detail");
-                        $(a).appendTo($(td11));
+
+                        var btnUpdate = document.createElement("input");
+                        $(btnUpdate).attr({
+                            "type": "button",
+                            "class": "btn btn-warning",
+                            "value": "Update",
+                            "name": value.ProductID
+                        }).on("click", function() {
+                            var CategoryID = this.name;
+                            var satir = $(this).parent().parent()[0].childNodes;
+                            var CategoryName = satir[1].innerText;
+                            var Description = satir[2].innerText;
+                            $('#CategoryID').val(CategoryID);
+                            $('#txtCategoryName2').val(CategoryName);
+                            $('#txtDescription2').val(Description);
+                            $('#frmAdd').hide();
+                            $('#frmUpdate').show(400);
+                        })
+                        $(btnUpdate).appendTo($(td11));
+
+                        var btnDelete = document.createElement("input");
+                        $(btnDelete).attr({
+                            "type": "button",
+                            "class": "btn btn-danger",
+                            "value": "Delete",
+                            "name": value.ProductID
+                        }).on("click",
+                            function() {
+                                var id = this.name;
+                                $.ajax({
+                                    url: "@Url.Action("Delete","Product")",
+                                    method: "post",
+                                    dataType: "json",
+                                    data: { id: id }
+                                }).done(function(e) {
+                                    alert(e.message);
+                                    init();
+                                });
+                            });
+                        $(btnDelete).appendTo($(td11));
 
                         $(tr).append(th).append(td).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8).append(td9).append(td10).append(td11).appendTo($("#resultbody"));
                     });

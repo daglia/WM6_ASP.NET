@@ -84,5 +84,5 @@ namespace AjaxIslemleri.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
         }
-
-        
+    }
+}
