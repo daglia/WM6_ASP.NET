@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="container">
+    <div class="row"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <select id="cmbCategory" class="form-control input-lg">
+                <option value="1">a</option>
+                <option value="2">a</option>
+                <option value="3">a</option>
+                <option value="4">a</option>
+                <option value="5">a</option>
+                <option value="6">a</option>
+            </select>
+        </div>
+        <div class="row" id="resultdiv">
+            <div class="col-md-12">
+                <table class="table table-responsive table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Category Name</th>
+                            <th>Quantity Per Unit</th>
+                            <th>Unit Price</th>
+                            <th>Units In Stock</th>
+                            <th>Units On Order</th>
+                            <th>Reorder Level</th>
+                            <th>Added Date</th>
+                            <th>Supplier Name</th>
+                            <th>Discontinued</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(function() {
+            function init() {
+                $.ajax({
+                    url: "@Url.Action("GetAllCategories","Product")",
+                    method: "get",
+                    dataType: "json"
+                }).done(function(e) {
+                    if (e.success) {
+                        $("#cmbCategory").empty();
+                        $("#cmbCategory").append($("<option></option>")
+                            .attr("value", 0)
+                        .text("Kategorisi Yok"));
+                        $.each(e.data,
+                            function(key, value) {
+                                $('#cmbCategory')
+                                    .append($("<option></option>")
+                                        .attr("value", value.CategoryID)
+                                        .text(value.CategoryName));
+                            });
+                    }
+                    });
+
+            }
+
+            $("#cmbCategory").change(function () {
+                var id = $(this).val();
+                console.log($("#cmbCategory option:selected").val());
+
+                $.ajax({
+                    url: "@Url.Action("GetAllProducts", "Product")",
+                    method: "get",
+                    dataType: "json"
+                }).done(function(e) {
+                    if (e.success) {
+                        renderdata(e.data);
+                        $("#resultdiv").show(600);
+                    } else {
+                        alert(e.message);
+                    }
+                    });
+            });
+
+            init();
+
+            function renderdata(data) {
+                $("#resultbody").empty();
+                $.each(data,
+                    function(key,value) {
+                        var tr = document.createElement("tr")
+                        var th = document.createElement("th");
+                        th.innerText = key + 1;
+                        var td = document.createElement("td");
+                        td.innerText = value.ProductName;
+                        var td2 = document.createElement("td");
+                        td2.innerText = value.CategoryName;
+                        var td3 = document.createElement("td");
+                        td3.innerText = value.QuantityPerUnit;
+                        var td4 = document.createElement("td");
+                        td4.innerText = value.UnitPriceFormatted;
+                        var td5 = document.createElement("td");
+                        td5.innerText = value.UnitsInStock;
+                        var td6 = document.createElement("td");
+                        td6.innerText = value.UnitsOnOrder;
+                        var td7 = document.createElement("td");
+                        td7.innerText = value.ReorderLevel;
+                        var td8 = document.createElement("td");
+                        td8.innerText = value.AddedDateFormatted;
+                        var td9 = document.createElement("td");
+                        td9.innerText = value.SupplierName;
+                        var td10 = document.createElement("td");
+                        td10.innerText = value.Discontinued.toString();
+                        var td11 = document.createElement("td");
+                        var a = document.createElement("a");
+                        $(a).attr("href", "@Url.Action("Detail", "Category")" + "/" + value.CategoryID).attr("class", "btn btn-success").html("Detail");
+                        $(a).appendTo($(td11));
+
+                        $(tr).append(th).append(td).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8).append(td9).append(td10).append(td11).appendTo($("#resultbody"));
+                    });
+            }
+        });
+    </script>
+}
