@@ -6,10 +6,11 @@ using System.Web.Mvc;
 using AjaxIslemleri.Models;
 using AjaxIslemleri.Models.ViewModels;
 
-namespace AjaxIslemleri.Controllers
+namespace AjaxIslemler.Controllers
 {
     public class ProductController : Controller
     {
+        // GET: Product
         public ActionResult Index()
         {
             return View();
@@ -39,36 +40,46 @@ namespace AjaxIslemleri.Controllers
                 return Json(new ResponseData()
                 {
                     success = false,
-                    message = $"Bir hata oluştu!\n{ex.Message}"
+                    message = $"Bir hata olustu {ex.Message}"
                 }, JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpGet]
-        public JsonResult GetAllProducts()
+        public JsonResult GetAllProducts(string key)
         {
             try
             {
                 var db = new NorthwindEntities();
-                var data = db.Products.OrderBy(x => x.ProductName).ToList()
-                    .Select(x=> new ProductViewModel()
+                var query = db.Products.AsQueryable();
+                if (!string.IsNullOrEmpty(key))
+                {
+                    key = key.ToLower();
+                    query = query.Where(x => x.ProductName.ToLower().Contains(key) ||
+                                       x.Category.CategoryName.ToLower().Contains(key) ||
+                                       x.Supplier.CompanyName.ToLower().Contains(key));
+                }
+                var data = query.OrderBy(x => x.ProductName)
+                    .ToList()
+                    .Select(x => new ProductViewModel()
                     {
                         CategoryName = x.Category?.CategoryName,
-                        ProductName = x.ProductName,
-                        ProductID = x.ProductID,
-                        CategoryID = x.CategoryID,
                         AddedDate = x.AddedDate,
+                        CategoryID = x.CategoryID,
+                        ProductName = x.ProductName,
+                        UnitsInStock = x.UnitsInStock,
+                        UnitPrice = x.UnitPrice,
+                        ProductID = x.ProductID,
                         AddedDateFormatted = $"{x.AddedDate:g}",
                         Discontinued = x.Discontinued,
-                        UnitPrice = x.UnitPrice,
-                        UnitPriceFormatted = $"{x.UnitPrice:c2}",
-                        SupplierID = x.SupplierID,
-                        UnitsOnOrder = x.UnitsOnOrder,
-                        UnitsInStock = x.UnitsInStock,
-                        SupplierName = x.Supplier?.CompanyName,
+                        QuantityPerUnit = x.QuantityPerUnit,
                         ReorderLevel = x.ReorderLevel,
-                        QuantityPerUnit = x.QuantityPerUnit
-                    });
+                        SupplierID = x.SupplierID,
+                        SupplierName = x.Supplier?.CompanyName,
+                        UnitPriceFormatted = $"{x.UnitPrice:c2}",
+                        UnitsOnOrder = x.UnitsOnOrder
+                    })
+                    .ToList();
                 return Json(new ResponseData()
                 {
                     success = true,
@@ -80,7 +91,58 @@ namespace AjaxIslemleri.Controllers
                 return Json(new ResponseData()
                 {
                     success = false,
-                    message = $"Bir hata oluştu!\n{ex.Message}"
+                    message = $"Bir hata olustu {ex.Message}"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult Add(Product model)
+        {
+            try
+            {
+                var db = new NorthwindEntities();
+                model.CategoryID = model.CategoryID == 0 ? null : model.CategoryID;
+                model.AddedDate = DateTime.Now;
+                db.Products.Add(model);
+                db.SaveChanges();
+                return Json(new ResponseData()
+                {
+                    success = true,
+                    message = $"{model.ProductName} isimli ürün basariyla eklenmiştir."
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    success = false,
+                    message = $"Bir hata olustu {ex.Message}"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult Delete(int id)
+        {
+            try
+            {
+                var db = new NorthwindEntities();
+                var pro = db.Products.Find(id);
+                db.Products.Remove(pro);
+                db.SaveChanges();
+
+                return Json(new ResponseData()
+                {
+                    message = $"{pro.ProductName} ürünü silindi.",
+                    success = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    message = $"Bir hata oluştu!\n{ex.Message}",
+                    success = false,
                 }, JsonRequestBehavior.AllowGet);
             }
         }
