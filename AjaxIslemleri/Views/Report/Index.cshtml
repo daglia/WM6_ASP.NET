@@ -30,17 +30,26 @@
                      */
 
                 }).done(function (e) {
-                    var data = google.visualization.arrayToDataTable(e);
-                    var view = new google.visualization.DataView(data);
+                    
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string','CategoryName');
+                    
+                    data.addColumn('number', 'Total');
+                    $.each(e, function (key, value) {
+                        data.addRow([value.Category,value.Total]);
+                    });
+                    
+                    //var view = new google.visualization.DataView(data);
                     var options = {
                         title: "Orders by Categories",
                         width: 600,
                         height: 400,
                         bar: { groupWidth: "95%" },
-                        legend: { position: "none" }
+                        //legend: { position: "none" },
+                        pieHole: 0.4,
                     };
                     var chart = new google.visualization.PieChart(document.getElementById("chart_div"));
-                    chart.draw(view, options);
+                    chart.draw(data, options);
                 });
 
             }
