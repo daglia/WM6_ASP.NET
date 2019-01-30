@@ -13,5 +13,12 @@ namespace Admin.Web.UI.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public ActionResult Error()
+        {
+
+            return View();
+        }
     }
 }

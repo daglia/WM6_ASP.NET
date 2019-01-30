@@ -54,16 +54,15 @@
     <Compile Include="Entities\Invoice.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
-    <Compile Include="Enums\OrderType.cs" />
-    <Compile Include="Enums\ProductType.cs" />
+    <Compile Include="Enums\OrderTypes.cs" />
+    <Compile Include="Enums\ProductTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ErrorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

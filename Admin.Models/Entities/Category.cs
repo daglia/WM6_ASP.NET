@@ -17,13 +17,17 @@ namespace Admin.Models.Entities
         [DisplayName("Kategori Adı")]
         [Required]
         public string CategoryName { get; set; }
-        [Range(0,1)]
+
+        [DisplayName("KDV Oranı")]
+        [Range(0, 99)]
         public decimal TaxRate { get; set; }
+
+        [DisplayName("Üst Kategori")]
         public int? SupCategoryId { get; set; }
 
         [ForeignKey("SupCategoryId")]
         public virtual Category SupCategory { get; set; }
-        public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
         public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

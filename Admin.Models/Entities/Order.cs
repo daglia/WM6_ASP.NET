@@ -14,7 +14,7 @@ namespace Admin.Models.Entities
     public class Order : BaseEntity<long>
     {
         [DisplayName("Sipariş Tipi")]
-        public OrderType OrderType { get; set; }
+        public OrderTypes OrderType { get; set; }
 
         public virtual ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
     }

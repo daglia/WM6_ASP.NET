@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Admin.Models.Enums
 {
-    public enum OrderType
+    public enum ProductTypes
     {
-        Buying = 10,
-        Selling = 20
+        [Description("Toptan")]
+        Bulk = 10,
+        [Description("Perakende")]
+        Retail = 100
     }
 }

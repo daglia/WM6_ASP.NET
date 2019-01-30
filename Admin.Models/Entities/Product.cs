@@ -22,7 +22,7 @@ namespace Admin.Models.Entities
         public string ProductName { get; set; }
 
         [DisplayName("Ürün Tipi")]
-        public ProductType ProductType { get; set; }
+        public ProductTypes ProductType { get; set; }
 
         [DisplayName("Satış Fiyatı")]
         public decimal SalesPrice { get; set; }
