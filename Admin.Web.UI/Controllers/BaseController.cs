@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using Admin.BLL.Repository;
 using Admin.Models.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using Admin.Models.Enums;
 
 namespace Admin.Web.UI.Controllers
 {
     public class BaseController : Controller
     {
-        // GET: Base
         protected List<SelectListItem> GetCategorySelectList()
         {
-            var categories = new CategoryRepo().GetAll().OrderBy(x => x.CategoryName);
-            List<SelectListItem> list = new List<SelectListItem>()
+            var categories = new CategoryRepo()
+                .GetAll(x => x.SupCategoryId == null)
+                .OrderBy(x => x.CategoryName);
+            var list = new List<SelectListItem>()
             {
                 new SelectListItem()
                 {
@@ -22,11 +23,15 @@ namespace Admin.Web.UI.Controllers
                     Value = "0"
                 }
             };
-
             foreach (var category in categories)
             {
                 if (category.Categories.Any())
                 {
+                    list.Add(new SelectListItem()
+                    {
+                        Text = category.CategoryName,
+                        Value = category.Id.ToString()
+                    });
                     list.AddRange(GetSubCategories(category.Categories.OrderBy(x => x.CategoryName).ToList()));
                 }
                 else
@@ -46,6 +51,11 @@ namespace Admin.Web.UI.Controllers
                 {
                     if (category.Categories.Any())
                     {
+                        list2.Add(new SelectListItem()
+                        {
+                            Text = category.CategoryName,
+                            Value = category.Id.ToString()
+                        });
                         list2.AddRange(GetSubCategories(category.Categories.OrderBy(x => x.CategoryName).ToList()));
                     }
                     else
@@ -57,7 +67,69 @@ namespace Admin.Web.UI.Controllers
                         });
                     }
                 }
+                return list2;
+            }
 
+            return list;
+        }
+
+        protected List<SelectListItem> GetProductSelectList()
+        {
+            var products = new ProductRepo()
+                .GetAll(x => x.SupProductId == null && x.ProductType == ProductTypes.Retail)
+                .OrderBy(x => x.ProductName);
+            var list = new List<SelectListItem>()
+            {
+                new SelectListItem()
+                {
+                    Text = "Perakende Ürünü Yok",
+                    Value = new Guid().ToString()
+                }
+            };
+            foreach (var product in products)
+            {
+                if (product.Products.Any(x => x.ProductType == ProductTypes.Retail))
+                {
+                    list.Add(new SelectListItem()
+                    {
+                        Text = product.ProductName,
+                        Value = product.Id.ToString()
+                    });
+                    list.AddRange(GetSubProducts(product.Products.Where(x => x.ProductType == ProductTypes.Retail).OrderBy(x => x.ProductName).ToList()));
+                }
+                else
+                {
+                    list.Add(new SelectListItem()
+                    {
+                        Text = product.ProductName,
+                        Value = product.Id.ToString()
+                    });
+                }
+            }
+
+            List<SelectListItem> GetSubProducts(List<Product> products2)
+            {
+                var list2 = new List<SelectListItem>();
+                foreach (var product in products2)
+                {
+                    if (product.Products.Any(x => x.ProductType == ProductTypes.Retail))
+                    {
+                        list2.Add(new SelectListItem()
+                        {
+                            Text = product.ProductName,
+                            Value = product.Id.ToString()
+                        });
+                        list2.AddRange(GetSubProducts(product.Products.Where(x => x.ProductType == ProductTypes.Retail).OrderBy(x => x.ProductName).ToList()));
+                    }
+                    else
+                    {
+                        list2.Add(new SelectListItem()
+                        {
+                            Text = product.ProductName,
+                            Value = product.Id.ToString()
+                        });
+                    }
+                }
                 return list2;
             }
 
