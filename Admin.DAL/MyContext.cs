@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Admin.Models.Entities;
+using Admin.Models.IdentityModels;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Admin.DAL
 {
-    public class MyContext : DbContext
+    public class MyContext : IdentityDbContext<User>
     {
         public MyContext() : base("name=MyCon")
         {
