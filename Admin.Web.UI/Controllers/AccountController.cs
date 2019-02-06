@@ -1,4 +1,15 @@
-﻿using Admin.Models.IdentityModels;
+﻿//   ah o gemide ben de olsaydım
+//
+//              v
+//             /|
+//            /_|
+//           /__|\
+//          /___| \
+//     {}__/____|__\_____}
+//      \_______________/
+//
+
+using Admin.Models.IdentityModels;
 using Admin.Models.ViewModels;
 using System;
 using System.Linq;
@@ -133,7 +144,7 @@ namespace Admin.Web.UI.Controllers
         {
             var authManager = HttpContext.GetOwinContext().Authentication;
             authManager.SignOut();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Account");
         }
     }
 }

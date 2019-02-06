@@ -1,4 +1,16 @@
-﻿using System;
+﻿//
+//        yihhuuuuu kod içinde tank sürüyorum
+//          
+//              __\o/__
+//             /_______\
+//            |       ((((((((((((((((O)
+//         __/______________\_______
+//        /________________\________\
+//        \________________/________/
+//        (O_O_O_O_O_O_O)_)O_O_O_O)_)
+//
+
+using System;
 using Admin.BLL.Repository;
 using Admin.Models.Entities;
 using System.Collections.Generic;
@@ -8,6 +20,7 @@ using Admin.Models.Enums;
 
 namespace Admin.Web.UI.Controllers
 {
+    [Authorize]
     public class BaseController : Controller
     {
         protected List<SelectListItem> GetCategorySelectList()

@@ -22,7 +22,7 @@ namespace Admin.Web.UI
             var roleManager = MembershipTools.NewRoleManager();
             foreach (var rol in roller)
             {
-                if (roleManager.RoleExists(rol))
+                if (!roleManager.RoleExists(rol))
                     roleManager.Create(new Role()
                     {
                         Name = rol

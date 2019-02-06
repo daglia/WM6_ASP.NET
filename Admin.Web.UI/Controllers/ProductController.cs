@@ -22,6 +22,7 @@ namespace Admin.Web.UI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Add()
         {
             ViewBag.ProductList = GetProductSelectList();
@@ -31,6 +32,7 @@ namespace Admin.Web.UI.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Add(Product model)
         {
             if (!ModelState.IsValid)
