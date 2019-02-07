@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Admin.Models.IdentityModels
 {
@@ -13,9 +8,10 @@ namespace Admin.Models.IdentityModels
         [StringLength(50)]
         [Required]
         public string Name { get; set; }
-
         [StringLength(60)]
         [Required]
         public string Surname { get; set; }
+
+        public string ActivationCode { get; set; }
     }
 }
