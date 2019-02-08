@@ -12,18 +12,24 @@
 using Admin.Models.IdentityModels;
 using Admin.Models.ViewModels;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Admin.BLL.Helpers;
+using Admin.BLL.Identity;
 using Admin.BLL.Services.Senders;
+using Admin.Web.UI.Helpers;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using static Admin.BLL.Identity.MembershipTools;
 
 namespace Admin.Web.UI.Controllers
 {
+    [RequireHttps]
     public class AccountController : Controller
     {
         // GET: Account
@@ -174,7 +180,8 @@ namespace Admin.Web.UI.Controllers
                         Name = user.Name,
                         PhoneNumber = user.PhoneNumber,
                         Surname = user.Surname,
-                        UserName = user.UserName
+                        UserName = user.UserName,
+                        AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/avatars/avatar3.jpg" : user.AvatarPath
                     }
                 };
                 return View(data);
@@ -215,6 +222,29 @@ namespace Admin.Web.UI.Controllers
                     //todo tekrar aktivasyon maili gönderilmeli. rolü de aktif olmamış role çevrilmeli.
                 }
                 user.Email = model.UserProfileViewModel.Email;
+
+                if (model.UserProfileViewModel.PostedFile != null &&
+                    model.UserProfileViewModel.PostedFile.ContentLength > 0)
+                {
+                    var file = model.UserProfileViewModel.PostedFile;
+                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                    string extName = Path.GetExtension(file.FileName);
+                    fileName = StringHelpers.UrlFormatConverter(fileName);
+                    fileName += StringHelpers.GetCode();
+                    var klasoryolu = Server.MapPath("~/Upload/");
+                    var dosyayolu = Server.MapPath("~/Upload/") + fileName + extName;
+
+                    if (!Directory.Exists(klasoryolu))
+                        Directory.CreateDirectory(klasoryolu);
+                    file.SaveAs(dosyayolu);
+
+                    WebImage img = new WebImage(dosyayolu);
+                    img.Resize(250, 250, false);
+                    img.AddTextWatermark("Wissen");
+                    img.Save(dosyayolu);
+                    user.AvatarPath = "/Upload/" + fileName + extName;
+                }
+
 
                 await userManager.UpdateAsync(user);
                 TempData["Message"] = "Güncelleme işlemi başarılı";
@@ -388,6 +418,48 @@ namespace Admin.Web.UI.Controllers
             }
 
             return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            Session["provider"] = provider;
+            Session["returnUrl"] = returnUrl;
+            return new ChallengeResult(provider, returnUrl);
+        }
+        [AllowAnonymous]
+        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        {
+
+            var loginInfo = await HttpContext.GetOwinContext().Authentication.GetExternalLoginInfoAsync();
+
+            if (loginInfo == null)
+            {
+                return Redirect("/account");
+            }
+
+            var authManager = HttpContext.GetOwinContext().Authentication;
+            var userManager = MembershipTools.NewUserManager();
+            var signInManager = new SignInManager<User, string>(userManager, authManager);
+
+            var status = await signInManager.ExternalSignInAsync(loginInfo, true);
+            switch (status)
+            {
+                case SignInStatus.Success:
+                    if (string.IsNullOrEmpty(returnUrl))
+                        return RedirectToAction("Index", "Home");
+                    else
+                        return Redirect(returnUrl);
+                case SignInStatus.Failure:
+                    //ilk defa gelen kişi kayıt yönergelerini tamamlatacağız
+                    ViewBag.ReturnUrl = returnUrl;
+                    ViewBag.Message = "Kayıt işleminizi tamamlayın";
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel() { Email = loginInfo.Email, UserName = loginInfo.DefaultUserName.ToLower().Replace(" ", "") });
+            }
+
+            return Redirect("/");
         }
     }
 }
