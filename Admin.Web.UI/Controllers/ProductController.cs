@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Admin.BLL.Helpers;
 using Admin.BLL.Repository;
 using Admin.BLL.Services;
-using Admin.Models;
 using Admin.Models.Entities;
 using Admin.Models.Models;
 using Admin.Models.ViewModels;
@@ -33,7 +35,7 @@ namespace Admin.Web.UI.Controllers
         [ValidateAntiForgeryToken]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> Add(Product model)
+        public async Task<ActionResult> Add(ProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -44,12 +46,61 @@ namespace Admin.Web.UI.Controllers
 
             try
             {
-                if (model.SupProductId.ToString().Replace("0", "").Replace("-", "").Length == 0)
-                    model.SupProductId = null;
+                if (model.Product.SupProductId.ToString().Replace("0", "").Replace("-", "").Length == 0)
+                    model.Product.SupProductId = null;
 
-                model.LastPriceUpdateDate = DateTime.Now;
-                await new ProductRepo().InsertAsync(model);
-                TempData["Message"] = $"{model.ProductName} isimli ürün başarıyla eklenmiştir";
+                model.Product.LastPriceUpdateDate = DateTime.Now;
+                Product product = new Product()
+                {
+                    Category = model.Product.Category,
+                    Description = model.Product.Description,
+                    ProductName = model.Product.ProductName,
+                    SalesPrice = model.Product.SalesPrice,
+                    BuyPrice = model.Product.BuyPrice,
+                    Id = model.Product.Id,
+                    ImagePath = model.Product.ImagePath,
+                    Barcode = model.Product.Barcode,
+                    CreatedDate = model.Product.CreatedDate,
+                    Invoices = model.Product.Invoices,
+                    LastPriceUpdateDate = model.Product.LastPriceUpdateDate,
+                    ProductType = model.Product.ProductType,
+                    Products = model.Product.Products,
+                    Quantity = model.Product.Quantity,
+                    SupProduct = model.Product.SupProduct,
+                    SupProductId = model.Product.SupProductId,
+                    UnitsInStock = model.Product.UnitsInStock,
+                    UpdatedDate = model.Product.UpdatedDate
+                };
+                product.CategoryId = model.Product.CategoryId;
+                if (model.PostedFile != null &&
+                    model.PostedFile.ContentLength > 0)
+                {
+                    MemoryStream target = new MemoryStream();
+                    model.PostedFile.InputStream.CopyTo(target);
+                    byte[] data = target.ToArray();
+                    model.Image = data;
+
+
+                    var file = model.PostedFile;
+                    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                    string extName = Path.GetExtension(file.FileName);
+                    fileName = StringHelpers.UrlFormatConverter(fileName);
+                    fileName += StringHelpers.GetCode();
+                    var klasoryolu = Server.MapPath("~/Upload/");
+                    var dosyayolu = Server.MapPath("~/Upload/") + fileName + extName;
+
+                    if (!Directory.Exists(klasoryolu))
+                        Directory.CreateDirectory(klasoryolu);
+                    file.SaveAs(dosyayolu);
+
+                    WebImage img = new WebImage(dosyayolu);
+                    img.Resize(250, 250, false);
+                    img.AddTextWatermark("Wissen");
+                    img.Save(dosyayolu);
+                    product.ImagePath = "/Upload/" + fileName + extName;
+                }
+                await new ProductRepo().InsertAsync(product);
+                TempData["Message"] = $"{model.Product.ProductName} isimli ürün başarıyla eklenmiştir";
                 return RedirectToAction("Add");
             }
             catch (DbEntityValidationException ex)
@@ -75,34 +126,31 @@ namespace Admin.Web.UI.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+
         [HttpGet]
-        public JsonResult CheckBarcode(string barcode)
+        [AllowAnonymous]
+        public ActionResult List()
         {
             try
             {
-                if (new ProductRepo().Queryable().Any(x => x.Barcode == barcode))
-                {
-                    return Json(new ResponseData()
-                    {
-                        message = $"{barcode} sistemde kayıtlı",
-                        success = true
-                    }, JsonRequestBehavior.AllowGet);
-                }
-                return Json(new ResponseData()
-                {
-                    message = $"{barcode} bilgisi servisten getirildi",
-                    success = true,
-                    data = new BarcodeService().Get(barcode)
-                }, JsonRequestBehavior.AllowGet);
+                List<Product> model = new ProductRepo().GetAll();
+                if (model != null)
+                    return View(model);
             }
             catch (Exception ex)
             {
-                return Json(new ResponseData()
+                TempData["Model"] = new ErrorViewModel()
                 {
-                    message = $"Bir hata oluştu: {ex.Message}",
-                    success = false
-                }, JsonRequestBehavior.AllowGet);
+                    Text = $"Bir hata oluştu: {ex.Message}",
+                    ActionName = "List",
+                    ControllerName = "Product",
+                    ErrorCode = 500
+                };
+                return RedirectToAction("Error", "Home");
             }
+
+            return RedirectToAction("List", "Product");
         }
+
     }
 }

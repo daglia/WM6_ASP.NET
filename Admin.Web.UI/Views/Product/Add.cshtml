@@ -1,4 +1,4 @@
-﻿@model Product
+﻿@model Admin.Models.ViewModels.ProductViewModel
 @{
     ViewBag.Title = "Add Product";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -10,7 +10,7 @@
             <div class="card-header">
                 <h4>Ürün Ekleme Formu</h4>
                 <br />
-                <div class="text text-danger">@Html.ValidationSummary()</div>
+                <div class="text-red">@Html.ValidationSummary()</div>
                 @*<ul class="card-actions">
                         <li>
                             <button type="button"><i class="ion-more"></i></button>
@@ -44,7 +44,7 @@
             <div class="card-header">
                 <h4>Ürün Ekleme Formu</h4>
                 <br />
-                <div class="text text-danger">@Html.ValidationSummary()</div>
+                <div class="text-red">@Html.ValidationSummary()</div>
                 @*<ul class="card-actions">
                         <li>
                             <button type="button"><i class="ion-more"></i></button>
@@ -52,68 +52,74 @@
                     </ul>*@
             </div>
             <div class="card-block">
-                @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { @class = "form-horizontal" }))
+                @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
                     <div class="form-group">
-                        @Html.LabelFor(x => x.ProductName, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.ProductName, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.ProductName, new { @class = "form-control", placeholder = "Ürün Adı" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.ProductName)</span>
+                            @Html.TextBoxFor(x => x.Product.ProductName, new { @class = "form-control", placeholder = "Ürün Adı" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.ProductName)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.CategoryId, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.CategoryId, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.DropDownListFor(x => x.CategoryId, (List<SelectListItem>)ViewBag.CategoryList, new { @class = "form-control", size = "1" })
+                            @Html.DropDownListFor(x => x.Product.CategoryId, (List<SelectListItem>)ViewBag.CategoryList, new { @class = "form-control", size = "1" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.SupProductId, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.SupProductId, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.DropDownListFor(x => x.SupProductId, (List<SelectListItem>)ViewBag.ProductList, new { @class = "form-control", size = "1" })
+                            @Html.DropDownListFor(x => x.Product.SupProductId, (List<SelectListItem>)ViewBag.ProductList, new { @class = "form-control", size = "1" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.Barcode, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.Barcode, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.Barcode, new { @class = "form-control", placeholder = "Barcode" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.Barcode)</span>
+                            @Html.TextBoxFor(x => x.Product.Barcode, new { @class = "form-control", placeholder = "Barcode" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.Barcode)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.BuyPrice, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.BuyPrice, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.BuyPrice, new { @class = "form-control", placeholder = "Alış Fiyatı" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.BuyPrice)</span>
+                            @Html.TextBoxFor(x => x.Product.BuyPrice, new { @class = "form-control", placeholder = "Alış Fiyatı" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.BuyPrice)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.SalesPrice, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.SalesPrice, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.SalesPrice, new { @class = "form-control", placeholder = "Satış Fiyatı" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.SalesPrice)</span>
+                            @Html.TextBoxFor(x => x.Product.SalesPrice, new { @class = "form-control", placeholder = "Satış Fiyatı" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.SalesPrice)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.ProductType, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.ProductType, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.EnumDropDownListFor(x => x.ProductType, "Seçiniz", new { @class = "form-control", size = "1" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.ProductType)</span>
+                            @Html.EnumDropDownListFor(x => x.Product.ProductType, "Seçiniz", new { @class = "form-control", size = "1" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.ProductType)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.Description, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.Description, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.Description, new { @class = "form-control", placeholder = "Açıklama" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.Description)</span>
+                            @Html.TextBoxFor(x => x.Product.Description, new { @class = "form-control", placeholder = "Açıklama" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.Description)</span>
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(x => x.Quantity, new { @class = "col-md-3 control-label" })
+                        @Html.LabelFor(x => x.Product.Quantity, new { @class = "col-md-3 control-label" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control", placeholder = "Birim", type = "number" })
-                            <br /><span class="text-danger">@Html.ValidationMessageFor(x => x.Quantity)</span>
+                            @Html.TextBoxFor(x => x.Product.Quantity, new { @class = "form-control", placeholder = "Birim", type = "number" })
+                            <br /><span class="text-red">@Html.ValidationMessageFor(x => x.Product.Quantity)</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-6">
+                            @Html.LabelFor(x => x.PostedFile)
+                            @Html.TextBoxFor(x => x.PostedFile, new { @class = "form-control", type = "file", multiple = false })
                         </div>
                     </div>
                     <div class="form-group m-b-0">

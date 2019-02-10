@@ -48,6 +48,11 @@ namespace Admin.Models.Entities
         public virtual Category Category { get; set; }
         [ForeignKey("SupProductId")]
         public virtual Product SupProduct { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public byte[] Image { get; set; }
+
         public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
         public virtual ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
     }
