@@ -3,7 +3,11 @@
     ViewBag.Title = "EditUser";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-
+@section top
+{
+    <link rel="stylesheet" href="~/assets/js/plugins/select2/select2.min.css" />
+    <link rel="stylesheet" href="~/assets/js/plugins/select2/select2-bootstrap.css" />
+}
 <div class="col-md-6">
     <h3>@TempData["Message"]</h3>
     @Html.ValidationSummary()
@@ -58,3 +62,34 @@
     </div>
     <!-- .card -->
 </div>
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-block">
+            <div class="form-group">
+                @using (Html.BeginForm("EditUserRoles", "Admin", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.Label("Roles", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-7">
+                        @Html.DropDownList("Roles", (List<SelectListItem>)ViewBag.RoleList, new { @class = "js-select2 form-control", size = "1", multiple = "multiple" })
+                    </div>
+                    <input type="submit" value="Rol Güncelle" class="btn btn-action" />
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+@section bottom
+{
+    <script src="~/assets/js/plugins/select2/select2.full.min.js"></script>
+    <script src="~/assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+    <script>
+        $(function () {
+            App.initHelpers(['select2']);
+
+        });
+    </script>
+}
