@@ -242,7 +242,10 @@ namespace Admin.Web.UI.Controllers
                     img.Resize(250, 250, false);
                     img.AddTextWatermark("Wissen");
                     img.Save(dosyayolu);
+                    var oldPath = user.AvatarPath;
                     user.AvatarPath = "/Upload/" + fileName + extName;
+
+                    System.IO.File.Delete(Server.MapPath(oldPath));
                 }
 
 
