@@ -17,10 +17,30 @@ namespace Admin.Web.UI.Controllers
 {
     public class ProductController : BaseController
     {
+        [HttpGet]
+        [AllowAnonymous]
         // GET: Product
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                List<Product> model = new ProductRepo().GetAll();
+                if (model != null)
+                    return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Model"] = new ErrorViewModel()
+                {
+                    Text = $"Bir hata oluştu: {ex.Message}",
+                    ActionName = "List",
+                    ControllerName = "Product",
+                    ErrorCode = 500
+                };
+                return RedirectToAction("Error", "Home");
+            }
+
+            return RedirectToAction("Index", "Product");
         }
 
         [HttpGet]
@@ -126,31 +146,5 @@ namespace Admin.Web.UI.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public ActionResult List()
-        {
-            try
-            {
-                List<Product> model = new ProductRepo().GetAll();
-                if (model != null)
-                    return View(model);
-            }
-            catch (Exception ex)
-            {
-                TempData["Model"] = new ErrorViewModel()
-                {
-                    Text = $"Bir hata oluştu: {ex.Message}",
-                    ActionName = "List",
-                    ControllerName = "Product",
-                    ErrorCode = 500
-                };
-                return RedirectToAction("Error", "Home");
-            }
-
-            return RedirectToAction("List", "Product");
-        }
-
     }
 }
