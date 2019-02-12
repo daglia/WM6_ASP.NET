@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Optimization;
 using System.Web.Routing;
 using Admin.BLL.Identity;
 using Admin.BLL.Services;
 using Admin.Models.Enums;
 using Admin.Models.IdentityModels;
+using Admin.Web.UI.App_Start;
 using Microsoft.AspNet.Identity;
 
 namespace Admin.Web.UI
@@ -18,6 +20,7 @@ namespace Admin.Web.UI
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             var roller = Enum.GetNames(typeof(IdentityRoles));
 
