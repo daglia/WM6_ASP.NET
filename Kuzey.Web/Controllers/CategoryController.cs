@@ -7,9 +7,12 @@ using AutoMapper;
 using Kuzey.BLL.Repository;
 using Kuzey.Models.Entities;
 using Kuzey.Models.ViewModels;
+using Kuzey.Web.App_Code;
 
 namespace Kuzey.Web.Controllers
 {
+    [ExceptionHandlerFilter]
+    [RoutePrefix("Kategori")]
     public class CategoryController : Controller
     {
         // GET: Category
@@ -23,6 +26,15 @@ namespace Kuzey.Web.Controllers
         {
             new CategoryRepo().Insert(Mapper.Map<CategoryViewModel, Category>(model));
             return View();
+        }
+
+        [HttpGet]
+        [Route("~/Detay/{kategoriadi}/{id?}")]
+        public ActionResult Detail(string kategoriadi, int id = 0)
+        {
+            var model = new CategoryRepo().GetById(id);
+            var data = Mapper.Map<CategoryViewModel>(model);
+            return View(data);
         }
     }
 }
