@@ -16,6 +16,13 @@ namespace Admin.BLL.Helpers
                 .GetEnumName(item))[0]
                 .GetCustomAttributes(typeof(DescriptionAttribute), false)[0];
             return ((DescriptionAttribute) descriptionAttributes).Description;
+
+            //
+            //  ooh    (^ -.-^)       göbek atan
+            //        ö   ö           enum helper
+            //   ooh   |( )|~~~       kedisi
+            //         ö    ö
+            //
         }
     }
 }

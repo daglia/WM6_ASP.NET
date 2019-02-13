@@ -35,6 +35,28 @@ namespace Kuzey.BLL.Helpers
             sonuc = sonuc.Replace(";", "-");
             sonuc = sonuc.Replace("#", "-sharp");
             sonuc = sonuc.Replace("/", "-");
+            sonuc = sonuc.Replace(@"\", "-");
+            sonuc = sonuc.Replace("ß", "ss");
+            sonuc = sonuc.Replace("ë", "e");
+            sonuc = sonuc.Replace("ä", "a");
+            sonuc = sonuc.Replace("à", "a");
+            sonuc = sonuc.Replace("á", "a");
+            sonuc = sonuc.Replace("æ", "ae");
+            sonuc = sonuc.Replace("í", "i");
+            sonuc = sonuc.Replace("ì", "i");
+            sonuc = sonuc.Replace("ñ", "n");
+            sonuc = sonuc.Replace("é", "e");
+            sonuc = sonuc.Replace("è", "e");
+            sonuc = sonuc.Replace("ô", "o");
+            sonuc = sonuc.Replace("â", "a");
+
+            // falan filan
+            //
+            //       *
+            //      / \           string
+            //     /___\          helper
+            //   ~(´`v´`)~        civciv
+            //     ´   ` 
 
             return sonuc;
         }
