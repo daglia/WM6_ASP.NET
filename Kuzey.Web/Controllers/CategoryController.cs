@@ -16,6 +16,7 @@ namespace Kuzey.Web.Controllers
     public class CategoryController : Controller
     {
         // GET: Category
+        [Route]
         public ActionResult Index()
         {
             var data = new CategoryRepo().GetAll().Select(x => Mapper.Map<CategoryViewModel>(x)).ToList();

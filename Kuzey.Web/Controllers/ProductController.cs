@@ -15,6 +15,7 @@ namespace Kuzey.Web.Controllers
     [RoutePrefix("Urun")]
     public class ProductController : Controller
     {
+        [Route]
         // GET: Product
         public ActionResult Index()
         {

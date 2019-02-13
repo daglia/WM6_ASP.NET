@@ -34,6 +34,7 @@ namespace Kuzey.BLL.Helpers
             sonuc = sonuc.Replace("?", "-");
             sonuc = sonuc.Replace(";", "-");
             sonuc = sonuc.Replace("#", "-sharp");
+            sonuc = sonuc.Replace("/", "-");
 
             return sonuc;
         }

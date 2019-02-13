@@ -8,9 +8,9 @@
 
 @foreach (var item in Model)
 {
-    <dt>@item.ProductName - @item.CategoryName</dt>
+    <dt>@item.ProductName - @(item.CategoryName??"Kategorisiz")</dt>
     <dl>
-        <a href="@Url.Action("Detail", new {id = item.ProductID, kategoriadi = StringHelpers.UrlFormatConverter(item.CategoryName), urunadi = StringHelpers.UrlFormatConverter(item.ProductName)})">
+        <a href="@Url.Action("Detail", new {id = item.ProductID, kategoriadi = StringHelpers.UrlFormatConverter(item.CategoryName??"Kategorisiz"), urunadi = StringHelpers.UrlFormatConverter(item.ProductName)})">
             Ayrıntı
         </a>
     </dl>
