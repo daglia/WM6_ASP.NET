@@ -11,29 +11,99 @@
     <title>Products</title>
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
     <div class="main" ng-controller="ProductCtrl">
-        <br/>
-        <form name="urunekle">
-            <input type="text" placeholder="Ürün Adı" name="urunadi" ng-model="yeni.urunAdi" required minlength="3" /><br />
+        <br />
+        <div class="col-md-2 col-md-offset-1">
+            <form name="urunekle" class="form-group">
+                <input class="col-sm-12" type="text" placeholder="Ürün Adı" name="urunadi" ng-model="yeni.urunAdi" required minlength="3" /><br />
 
-            <label style="color: red;" ng-show="!urunekle.urunadi.$valid && urunekle.urunadi.$dirty">Lütfen en az 3 karakter giriniz.</label>
+                <label style="color: red;" ng-show="!urunekle.urunadi.$valid && urunekle.urunadi.$dirty">Lütfen en az 3 karakter giriniz.</label><br />
 
-            <input type="number" placeholder="Fiyat" name="fiyat" ng-model="yeni.fiyat" required min="0.1" max="999" /><br />
+                <input class="col-sm-12" type="number" placeholder="Fiyat" name="fiyat" ng-model="yeni.fiyat" required min="0.1" max="999" /><br />
 
-            <label style="color: red;" ng-show="urunekle.fiyat.$invalid && urunekle.fiyat.$dirty">Lütfen 0'dan büyük, 999'dan küçük bir sayı giriniz.</label>
+                <label style="color: red;" ng-show="urunekle.fiyat.$invalid && urunekle.fiyat.$dirty">Lütfen 0'dan büyük, 999'dan küçük bir sayı giriniz.</label><br />
 
-            <input type="button" value="Ekle" ng-click="ekle()" ng-show="urunekle.$valid" />
-            {{urunekle.$valid}}
-        </form>
-        <br/>
-        <input type="text" placeholder="Ara..." ng-model="txtara.urunAdi"/>
-        <ul>
-            <li ng-repeat="item in urunler | filter: txtara track by item.id">{{item.urunAdi}} - {{item.fiyat}} ₺
-            <input type="button" value="Sil" ng-click="sil(item.id)"/>
-            </li>
-        </ul>
+                <input class="btn btn-success btn-block" type="button" value="Ekle" ng-click="ekle()" ng-show="urunekle.$valid" />
+                @*{{urunekle.$valid}}*@
+            </form>
+            <br />
+            <div class="row">
+                <label class="col-sm-6">Ürün Tablosu</label>
+                <input class="col-sm-6" type="text" placeholder="Ara..." ng-model="txtara.urunAdi" />
+            </div>
+            <div class="row">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Ürün Adı</th>
+                            <th scope="col">Fiyat</th>
+                            <th scope="col">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in urunler | filter: txtara track by item.id">
+                            <td>{{item.urunAdi}}</td>
+                            <td>{{item.fiyat}} ₺</td>
+                            <td><input class="btn btn-danger btn-block" type="button" value="Sil" ng-click="sil(item.id)" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            @*<ul>
+                <li ng-repeat="item in urunler | filter: txtara track by item.id">
+                    {{item.urunAdi}} - {{item.fiyat}} ₺
+                    <input class="btn btn-danger" type="button" value="Sil" ng-click="sil(item.id)" />
+                </li>
+            </ul>*@
+        </div>
+        <div class="col-md-2 col-md-offset-1">
+            <div class="row">
+                <label class="col-sm-6">Sepet</label>
+                <input class="col-sm-6" type="text" placeholder="Ara..." ng-model="txtara.urunAdi" />
+            </div>
+            <div class="row">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Ürün Adı</th>
+                        <th scope="col">Fiyat</th>
+                        <th scope="col">İşlem</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in urunler | filter: txtara track by item.id">
+                        <td>{{item.urunAdi}}</td>
+                        <td>{{item.fiyat}} ₺</td>
+                        <td><input class="btn btn-warning btn-block" type="button" value="Ekle" ng-click="sepeteEkle(item.id)" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2 col-md-offset-1">
+            <div class="row">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Adet</th>
+                            <th scope="col">Ürün Adı</th>
+                            <th scope="col">Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in sepet | filter: txtara track by item.id">
+                            <td>{{item.urunAdi}}</td>
+                            <td>{{item.fiyat}} ₺</td>
+                            <td><input class="btn btn-danger btn-block" type="button" value="Sil" ng-click="sil(item.id)" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </body>
 </html>

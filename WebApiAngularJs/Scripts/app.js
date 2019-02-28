@@ -4,6 +4,7 @@ var app = angular.module("myApp", []);
 
 app.controller("ProductCtrl", function ($scope) {
     $scope.urunler = [];
+    $scope.sepet = [];
 
     function init() {
         var data = JSON.parse(localStorage.getItem("urunler"));
@@ -30,6 +31,19 @@ app.controller("ProductCtrl", function ($scope) {
             }
         }
         localStorage.setItem("urunler", JSON.stringify($scope.urunler));
+    }
+
+    $scope.sepeteEkle = function (id) {
+        for (var i = 0; i < $scope.urunler.length; i++) {
+            var data = $scope.urunler[i];
+            if (id === data.id) {
+                $scope.sepet.push({
+                    urun: data
+                });
+                break;
+            }
+        }
+        localStorage.setItem("sepet", JSON.stringify($scope.sepet));
     }
 
     function guid() {
