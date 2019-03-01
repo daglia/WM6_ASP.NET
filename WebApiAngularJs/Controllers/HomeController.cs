@@ -1,4 +1,15 @@
-﻿using System;
+﻿//       ^(.,.)^
+//         |O|
+//         | |
+//         |O|                            minik zürafa
+//         | |                            sizin için bu
+//         |O|____________;               view'ları döndürüyor
+//         |  O   O   O  |
+//         |O _ O _ O _ O|
+//         |_| |_| |_| |_|
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,6 +26,11 @@ namespace WebApiAngularJs.Controllers
         }
 
         public ActionResult Products()
+        {
+            return View();
+        }
+
+        public ActionResult Category()
         {
             return View();
         }
