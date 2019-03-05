@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DevexOdata.Models;
 
 namespace DevexOdata.Controllers
 {
@@ -17,6 +18,22 @@ namespace DevexOdata.Controllers
         {
             ViewBag.Message = "Your application description page.";
 
+            ApplicationDbContext db = new ApplicationDbContext();
+            for (int i = 0; i < 5000; i++)
+            {
+                db.Customers.Add(new Customer()
+                {
+                    Name = FakeData.NameData.GetFirstName(),
+                    Surname = FakeData.NameData.GetSurname(),
+                    Address = FakeData.PlaceData.GetAddress(),
+                    Balance = FakeData.NumberData.GetNumber(1250,99999),
+                    Phone = "05" + FakeData.PhoneNumberData.GetPhoneNumber().Replace("-","").Substring(0,10)
+                });
+                if (i % 100 == 0)
+                    db.SaveChanges();
+            }
+
+            db.SaveChanges();
             return View();
         }
 
