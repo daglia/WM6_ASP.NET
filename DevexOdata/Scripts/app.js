@@ -19,21 +19,80 @@ app.controller("customerCtrl",
     function ($scope, $http) {
         $scope.data = null;
         function init() {
-            $http({
-                url: host + 'api/customer/getall',
-                method: 'GET'
-            }).then(function (ev) {
-                if (ev.data.success) {
-                    $scope.data = ev.data.data;
-                    loadGrid();
-                }
-            });
+            //$http({
+            //    url: host + 'api/customer/getall',
+            //    method: 'GET'
+            //}).then(function (ev) {
+            //    if (ev.data.success) {
+            //        $scope.data = ev.data.data;
+            //        loadGrid();
+            //    }
+            //});
+            loadGrid();
         }
 
         function loadGrid() {
             $scope.dataGridOptions = {
-                dataSource: $scope.data,
-                columns: ["Name", "Surname", "Phone", "Address", "Balance"],
+                keyExpr: "Id",
+                dataSource: {
+                    store: {
+                        type: "odata",
+                        url:"/odata/CustomerOdata",
+                        key: ["Id"],
+                        keyType: {
+                            Id:"Int32"
+                        }
+                    }
+                },
+                editing: {
+                    mode: "row",
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    allowAdding:true
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                onSelectionChanged: function(selected) {
+                    $scope.selected = selected.selectedRowsData;
+                },
+                "export": {
+                    enabled: true,
+                    fileName: "Customers_" + parseInt(Math.random() * 100000),
+                    allowExportSelectedData: true
+                },
+                columnChooser: {
+                    enabled: true,
+                    allowSearch: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                filterRow: {
+                    visible: true
+                },
+                headerFilter: {
+                    visible:true
+                },
+                columns: [
+                    {
+                        dataField: "Id",
+                        caption: "Müşteri No",
+                        visible: false
+                    }, {
+                        dataField: "Name",
+                        groupIndex: 0
+                    }, "Surname", "Phone", {
+                        dataField: "Address",
+                        allowHeaderFiltering: false
+                    },
+                    {
+                        dataField: "Balance",
+                        caption: "Balance",
+                        dataType: "number",
+                        format: "#,##0.### ₺"
+                    }
+                ],
                 showBorders: true,
                 paging: {
                     pageSize: 10
@@ -41,14 +100,34 @@ app.controller("customerCtrl",
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [5, 10, 20],
-                    showInfo:true
+                    showInfo: true
                 },
                 searchPanel: {
                     visible: true,
                     width: 240,
                     placeholder: "Ara..."
-                }
-            }
+                },
+                //summary: {
+                //    totalItems: [{
+                //        column: "Balance",
+                //        summaryType: "sum",
+                //        valueFormat: "#,##0.### ₺"
+                //    }],
+                //    groupItems: [
+                //        {
+                //            column: "Name",
+                //            summaryType: "count",
+                //            displayFormat: "Toplam: {0}"
+                //        },
+                //        {
+                //            column: "Balance",
+                //            summaryType: "avg",
+                //            displayFormat: "Ortalama: {0}",
+                //            alignByColumn: true,
+                //            valueFormat: "#,##0.### ₺"
+                //        }]
+                //}
+            };
         }
 
         init();
