@@ -59,7 +59,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMQ", "RabbitMQ", "{40
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit.Web.Mvc", "Rabbit.Web.Mvc\Rabbit.Web.Mvc.csproj", "{1D62498C-B487-4E41-898B-89864CA6B966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitConsumer", "RabbitConsumer\RabbitConsumer.csproj", "{D5379741-E877-488F-A670-33B93771205D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit.Consumer", "Rabbit.Consumer\Rabbit.Consumer.csproj", "{D5379741-E877-488F-A670-33B93771205D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rabbit.BLL", "Rabbit.BLL\Rabbit.BLL.csproj", "{EB5B5F49-C169-47D6-BA65-D7D983D428BA}"
 EndProject
