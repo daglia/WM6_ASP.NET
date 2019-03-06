@@ -97,7 +97,7 @@ namespace DevexOdata.Controllers.WebApi
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] int key, Delta<Customer> patch)
         {
-            Validate(patch.GetEntity());
+            //Validate(patch.GetEntity());
 
             if (!ModelState.IsValid)
             {

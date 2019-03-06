@@ -1,8 +1,9 @@
 ﻿/// <reference path="angular.js" />
 
 var app = angular.module("myApp", ["dx"]);
-var host = 'http://localhost:50347/';
-app.controller("testCtrl", function($scope) {
+var host = "http://localhost:50347/";
+
+app.controller("testCtrl", function ($scope) {
     $scope.dataGridOptions = {
         dataSource: customers,
         columns: ["CompanyName", "City", "State", "Phone", "Fax"],
@@ -15,123 +16,136 @@ app.controller("testCtrl", function($scope) {
     }
 });
 
-app.controller("customerCtrl",
-    function ($scope, $http) {
-        $scope.data = null;
-        function init() {
-            //$http({
-            //    url: host + 'api/customer/getall',
-            //    method: 'GET'
-            //}).then(function (ev) {
-            //    if (ev.data.success) {
-            //        $scope.data = ev.data.data;
-            //        loadGrid();
-            //    }
-            //});
-            loadGrid();
-        }
+app.controller("customerCtrl", function ($scope, $http) {
+    $scope.data = null;
+    function init() {
+        //$http({
+        //	url: host + 'api/customer/getall',
+        //	method: 'GET'
+        //}).then(function (ev) {
+        //	if (ev.data.success) {
+        //		$scope.data = ev.data.data;
+        //		loadGrid();
+        //	}
+        //});
 
-        function loadGrid() {
-            $scope.dataGridOptions = {
-                keyExpr: "Id",
-                dataSource: {
-                    store: {
-                        type: "odata",
-                        url:"/odata/CustomerOdata",
-                        key: ["Id"],
-                        keyType: {
-                            Id:"Int32"
-                        }
-                    }
-                },
-                editing: {
-                    mode: "row",
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    allowAdding:true
-                },
-                selection: {
-                    mode: "multiple"
-                },
-                onSelectionChanged: function(selected) {
-                    $scope.selected = selected.selectedRowsData;
-                },
-                "export": {
-                    enabled: true,
-                    fileName: "Customers_" + parseInt(Math.random() * 100000),
-                    allowExportSelectedData: true
-                },
-                columnChooser: {
-                    enabled: true,
-                    allowSearch: true
-                },
-                groupPanel: {
-                    visible: true
-                },
-                filterRow: {
-                    visible: true
-                },
-                headerFilter: {
-                    visible:true
-                },
-                columns: [
-                    {
-                        dataField: "Id",
-                        caption: "Müşteri No",
-                        visible: false
-                    }, {
-                        dataField: "Name",
-                        groupIndex: 0
-                    }, "Surname", "Phone", {
-                        dataField: "Address",
-                        allowHeaderFiltering: false
-                    },
-                    {
-                        dataField: "Balance",
-                        caption: "Balance",
-                        dataType: "number",
-                        format: "#,##0.### ₺"
-                    }
-                ],
-                showBorders: true,
-                paging: {
-                    pageSize: 10
-                },
-                pager: {
-                    showPageSizeSelector: true,
-                    allowedPageSizes: [5, 10, 20],
-                    showInfo: true
-                },
-                searchPanel: {
-                    visible: true,
-                    width: 240,
-                    placeholder: "Ara..."
-                },
-                //summary: {
-                //    totalItems: [{
-                //        column: "Balance",
-                //        summaryType: "sum",
-                //        valueFormat: "#,##0.### ₺"
-                //    }],
-                //    groupItems: [
-                //        {
-                //            column: "Name",
-                //            summaryType: "count",
-                //            displayFormat: "Toplam: {0}"
-                //        },
-                //        {
-                //            column: "Balance",
-                //            summaryType: "avg",
-                //            displayFormat: "Ortalama: {0}",
-                //            alignByColumn: true,
-                //            valueFormat: "#,##0.### ₺"
-                //        }]
-                //}
-            };
-        }
+        loadGrid();
+    }
 
-        init();
-    });
+    function loadGrid() {
+        $scope.dataGridOptions = {
+            //dataSource: $scope.data,
+            keyExpr: "Id",
+            dataSource: {
+                store: {
+                    type: "odata",
+                    url: host + '/odata/CustomerOdata',
+                    key: "Id"
+                    //keyType: {
+                    //	Id: "Int32"
+                    //}
+                }
+            },
+            editing: {
+                mode: "row",
+                allowUpdating: true,
+                allowDeleting: true,
+                allowAdding: true
+            },
+            selection: {
+                mode: "multiple"
+            },
+            onSelectionChanged: function (selected) {
+                $scope.selected = selected.selectedRowsData;
+            },
+            "export": {
+                enabled: true,
+                fileName: "Customers_" + parseInt(Math.random() * 100000),
+                allowExportSelectedData: true
+            },
+            columnChooser: {
+                enabled: true,
+                allowSearch: true
+            },
+            groupPanel: {
+                visible: true
+            },
+            filterRow: {
+                visible: true
+            },
+            headerFilter: {
+                visible: true
+            },
+            onRowUpdating: function (e) {
+                console.log("RowUpdating");
+                for (var propertyName in e.newData) {
+                    console.log(propertyName);
+                    e.oldData[propertyName] = e.newData[propName];
+                }
+                e.newData = e.oldData;
+                console.log(e);
+            },
+            onRowUpdated: function (e) {
+                console.log("RowUpdated");
+                console.log(e);
+            },
+            columns: [{
+                dataField: "Id",
+                caption: "Customer No",
+                visible: false
+            },
+            {
+                dataField: "Name",
+                groupIndex: 0
+            }, "Surname", "Phone",
+            {
+                dataField: "Address",
+                allowHeaderFiltering: false
+            },
+            {
+                dataField: "Balance",
+                caption: "Balance",
+                dataType: "number",
+                format: "#,##0.## ₺"
+            }],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 25],
+                showInfo: true
+            },
+            searchPanel: {
+                visible: true,
+                width: 240,
+                placeholder: "Ara..."
+            },
+            summary: {
+                //totalItems: [{
+                //	column: "Balance",
+                //	summaryType: "sum",
+                //	valueFormat: "#,##0.## ₺"
+                //}],
+                //groupItems: [{
+                //	column: "Name",
+                //	summaryType: "count",
+                //	displayFormat: "Total: {0}"
+                //},
+                //{
+                //	column: "Balance",
+                //	summaryType: "avg",
+                //	displayFormat: "Average: {0}",
+                //	alignByColumn: true,
+                //	valueFormat: "#,##0.## ₺"
+                //}]
+            }
+        }
+    }
+
+    init();
+});
 
 var customers = [{
     "ID": 1,
