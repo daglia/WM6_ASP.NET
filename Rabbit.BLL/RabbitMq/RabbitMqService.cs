@@ -5,7 +5,7 @@ namespace Rabbit.BLL.RabbitMq
 {
     public class RabbitMqService
     {
-        private readonly string _hostName = @"WISSEN\MSSQL2017",
+        private readonly string _hostName = @"Wissen",
             _userName = "daglia",
             _password = "123456";
 

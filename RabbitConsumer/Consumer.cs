@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Rabbit.BLL.RabbitMq;
 using Rabbit.Models.Entities;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Collections.Generic;
+using System.Text;
 
 namespace RabbitConsumer
 {
@@ -27,7 +24,7 @@ namespace RabbitConsumer
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
 
-                if (queueName == "MailLoq")
+                if (queueName == "MailLog")
                 {
                     var data = JsonConvert.DeserializeObject<List<MailLog>>(message);
                 }
